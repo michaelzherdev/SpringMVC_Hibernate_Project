@@ -1,0 +1,46 @@
+DROP DATABASE IF EXISTS test;
+create database test;
+\c test;
+ 
+CREATE TABLE products (
+  id SERIAL PRIMARY KEY NOT NULL,
+  name CHARACTER(30) NOT NULL,
+  price REAL NOT NULL
+  )
+  WITH ( OIDS = FALSE );
+
+ 
+CREATE TABLE sales (
+  id SERIAL PRIMARY KEY NOT NULL,
+  cost REAL NOT NULL,
+  date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  )
+  WITH ( OIDS = FALSE );
+
+CREATE TABLE order_items (
+    id SERIAL NOT NULL, 
+    sale_id INTEGER, 
+    product_id INTEGER, 
+    quantity INTEGER NOT NULL,
+    primary key (id)
+)
+WITH ( OIDS = FALSE );
+
+ALTER TABLE order_items
+    ADD CONSTRAINT order_itemsFK0 FOREIGN KEY (product_id) REFERENCES  products(id);
+ALTER TABLE order_items
+    ADD CONSTRAINT order_itemsFK1 FOREIGN KEY (sale_id) REFERENCES sales(id);
+ALTER TABLE order_items
+	ALTER COLUMN id SET DEFAULT nextval('"id_seq_order_items"');  
+
+INSERT INTO products (name, price) 
+VALUES ('Apple', 0.10),
+('Butter', 1.00),
+('Cabbage', 0.99),
+('Cheese', 2.40),
+('Chocolade', 1.50),
+('Honey 1L', 4.20),
+('Meat', 5.00),
+('Milk', 0.65),
+('Orange Juice', 2.00),
+('Tomatoes, 1 kilo', 1.25);
